@@ -65,7 +65,7 @@ Dim checkInstallSQLLOCALDB
 checkInstallSQLLOCALDB = ExecuteCommand("sqllocaldb 2>&1")
 
 If checkInstallSQLLOCALDB = "" Or InStr(LCase(checkInstallSQLLOCALDB), "not recognized") > 0 Then
-    MsgBox "⚠ SQL Server LocalDB is NOT installed on this computer.", vbExclamation, "Error"
+    MsgBox "SQL Server LocalDB is NOT installed on this computer.", vbExclamation, "Error"
     WScript.Quit
 End If
 
