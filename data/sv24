@@ -1,0 +1,79 @@
+CREATE DATABASE QLSVienT24;
+USE QLSVienT24;
+GO
+CREATE TABLE DMKhoa (
+    MaKH CHAR(2) PRIMARY KEY,
+    TenKhoa NVARCHAR(30) NOT NULL
+);
+GO
+CREATE TABLE SinhVien (
+    MaSV CHAR(3) PRIMARY KEY,
+    HoSV NVARCHAR(30) NOT NULL,
+    TenSV NVARCHAR(15) NOT NULL,
+    GioiTinh BIT NOT NULL,
+    NgaySinh DATETIME NOT NULL,
+    NoiSinh NVARCHAR(50),
+    DiaChi NVARCHAR(50),
+    Quan NVARCHAR(10),
+    MaKH CHAR(2),  -- Khóa ngoại tham chiếu DMKhoa
+    HocBong MONEY,
+    FOREIGN KEY (MaKH) REFERENCES DMKhoa(MaKH)
+);
+GO
+CREATE TABLE MonHoc (
+    MaMH CHAR(6) PRIMARY KEY,
+    TenMH NVARCHAR(50) NOT NULL,
+    SoTiet INT NOT NULL
+);
+GO
+CREATE TABLE KetQua (
+    MaSV CHAR(3),
+    MaMH CHAR(6),
+    Diem FLOAT,
+    PRIMARY KEY (MaSV, MaMH),  -- Khóa chính là kết hợp MaSV và MaMH
+    FOREIGN KEY (MaSV) REFERENCES SinhVien(MaSV),
+    FOREIGN KEY (MaMH) REFERENCES MonHoc(MaMH)
+);
+GO 
+INSERT INTO DMKhoa (MaKH, TenKhoa) VALUES
+('CK', 'Cơ Khí'),
+('TH', 'Công Nghệ Thông Tin'),
+('DL', 'Du Lịch'),
+('DI', 'Điện'); 
+GO 
+INSERT INTO MonHoc (MaMH, TenMH, SoTiet) VALUES
+('AV', 'Anh Văn', 120),
+('HO', 'Hóa', 90),
+('LS', 'Lịch Sử', 90),
+('LT', 'Lập Trình Cơ Bản', 120),
+('DH', 'Đồ Họa Ứng Dụng', 120),
+('SQL', 'Quản Trị CSDL SQL', 90),
+('TO', 'Toán', 90),
+('TH', 'Tin Học', 120);
+GO
+INSERT INTO SinhVien (MaSV, HoSV, TenSV, GioiTinh, NgaySinh, NoiSinh, DiaChi, Quan, MaKH, HocBong) VALUES
+('01', 'Nguyễn', 'Thanh', 1, '2000-10-10', 'Hà Nội', 'Hà Nội', 'Thanh Xuân', 'CK', 1000000),
+('02', 'Mai Văn', 'Tuấn', 1, '2003-12-12', 'HCM', 'HCM', 'Q3', 'TH', 300000),
+('03', 'Trần Thị', 'Thu', 0, '2002-10-20', 'Vũng Tàu', 'Vũng Tàu', 'P3', 'DL', NULL),
+('04', 'Phạm Thị', 'Hà', 0, '2004-12-03', 'Long An', 'Long An', 'P3', 'DI', NULL),
+('05', 'Trần Khánh', 'Hải', 1, '2005-05-15', 'Vũng Tàu', 'Vũng Tàu', 'P10', 'DI', 200000),
+('06', 'Lê Minh', 'Nam', 1, '2003-05-14', 'Vĩnh Long', 'Vĩnh Long', 'P5', 'CK', NULL);
+GO
+INSERT INTO KetQua (MaMH, MaSV, Diem) VALUES
+('AV', '01', 8),
+('AV', '02', 7),
+('HO', '02', 5),
+('LT', '02', 9.5),
+('DH', '02', 9),
+('SQL', '02', 8.5),
+('AV', '03', 7),
+('HO', '03', 5),
+('LS', '03', 2),
+('DH', '03', 4),
+('TH', '04', 9),
+('AV', '04', 10),
+('HO', '04', 10),
+('LS', '04', 10),
+('LT', '04', 8),
+('DH', '04', 8),
+('SQL', '04', 8.8);
