@@ -1,0 +1,91 @@
+CREATE DATABASE Quanlychuyenbay;
+GO
+
+-- Bảng KHÁCH HÀNG
+CREATE TABLE KHACHHANG (
+    MAKH CHAR(5) PRIMARY KEY,  -- Mã khách hàng thường có độ dài cố định
+    TEN NVARCHAR(50),          -- Tên khách có thể dài hơn, tránh mất thông tin
+    DCHI NVARCHAR(100),        -- Địa chỉ có thể dài nhưng không cần quá lớn
+    DTHOAI VARCHAR(12)         -- Số điện thoại tối đa 11 số, thêm 1 để phòng trường hợp
+);
+GO
+
+-- Bảng NHÂN VIÊN
+CREATE TABLE NHANVIEN (
+    MANV CHAR(5) PRIMARY KEY,  
+    TEN NVARCHAR(50),          
+    DCHI NVARCHAR(100),        
+    DTHOAI VARCHAR(12),        
+    LUONG INT,                 -- Lương là số nguyên, không cần thay đổi
+    LOAINV BIT                 -- Kiểu bit phù hợp cho True/False (1/0)
+);
+GO
+
+-- Bảng LOẠI MÁY BAY
+CREATE TABLE LOAIMB (
+    MALOAI CHAR(5) PRIMARY KEY,  -- Giữ mã loại máy bay ngắn gọn
+    HANGSX NVARCHAR(30)          -- Hãng sản xuất có thể dài hơn, ví dụ: "Boeing", "Airbus"
+);
+GO
+
+-- Bảng MÁY BAY
+CREATE TABLE MAYBAY (
+    SOHIEU CHAR(5) PRIMARY KEY,  -- Số hiệu máy bay thường có độ dài cố định
+    MALOAI CHAR(5),
+    FOREIGN KEY (MALOAI) REFERENCES LOAIMB(MALOAI)
+);
+GO
+
+-- Bảng KHẢ NĂNG của nhân viên
+CREATE TABLE KHANANG (
+    MANV CHAR(5),
+    MALOAI CHAR(5),
+    PRIMARY KEY (MANV, MALOAI),
+    FOREIGN KEY (MANV) REFERENCES NHANVIEN(MANV),
+    FOREIGN KEY (MALOAI) REFERENCES LOAIMB(MALOAI)
+);
+GO
+
+-- Bảng LỊCH BAY
+CREATE TABLE LICHBAY (
+    NGAYDI DATE,
+    MACB CHAR(5),
+    SOHIEU CHAR(5),
+    MALOAI CHAR(5),
+    PRIMARY KEY (NGAYDI, MACB),
+    FOREIGN KEY (SOHIEU) REFERENCES MAYBAY(SOHIEU),
+    FOREIGN KEY (MALOAI) REFERENCES LOAIMB(MALOAI)
+);
+GO
+
+-- Bảng ĐẶT CHỖ
+CREATE TABLE DATCHO (
+    MAKH CHAR(5),
+    NGAYDI DATE,
+    MACB CHAR(5),
+    PRIMARY KEY (MAKH, NGAYDI, MACB),
+    FOREIGN KEY (MAKH) REFERENCES KHACHHANG(MAKH),
+    FOREIGN KEY (NGAYDI, MACB) REFERENCES LICHBAY(NGAYDI, MACB)
+);
+GO
+
+-- Bảng PHÂN CÔNG nhân viên cho chuyến bay
+CREATE TABLE PHANCONG (
+    MANV CHAR(5),
+    NGAYDI DATE,
+    MACB CHAR(5),
+    PRIMARY KEY (MANV, NGAYDI, MACB),
+    FOREIGN KEY (MANV) REFERENCES NHANVIEN(MANV),
+    FOREIGN KEY (NGAYDI, MACB) REFERENCES LICHBAY(NGAYDI, MACB)
+);
+GO
+
+-- Bảng CHUYẾN BAY
+CREATE TABLE CHUYENBAY (
+    MACB CHAR(5) PRIMARY KEY,   -- Giữ mã chuyến bay ngắn gọn
+    SBDI NVARCHAR(50),         -- Sân bay đi có thể dài hơn vì có thể có cả thành phố
+    SBDEN NVARCHAR(50),        -- Sân bay đến tương tự
+    GIODI TIME,                -- Giờ đi định dạng chuẩn
+    GIODEN TIME                -- Giờ đến định dạng chuẩn
+);
+GO
